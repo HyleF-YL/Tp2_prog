@@ -6,8 +6,8 @@ export interface CartData{
     lines: ProductLineData[]
 }
 
-const useStore = create<CartData>(() => ({
-    lines: []
+export const useStore = create<CartData>(() => ({
+    lines: [] as ProductLineData[]
 }))
 
 /**

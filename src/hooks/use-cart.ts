@@ -92,7 +92,7 @@ export const useStore = create<CartData>(() => ({
     console.log(lines)
     let sumCart = 0
     lines.forEach((line) => {
-        sumCart += line['product']['price']
+        sumCart += computeLineSubTotal(line)
     })
     return sumCart
  }

@@ -42,7 +42,7 @@ export default function DevCartPage() {
                       lines.map((line) => {
                         return <ProductCartLine key={line['product']['id']} 
                         onDelete={() => removeLine(line['product']['id'])}
-                        onQtyChange={(value) => {
+                        onQtyChange={(value: number) => {
                           
                           let oldQty = line['qty']
                           line['qty'] = value

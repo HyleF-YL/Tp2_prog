@@ -1,3 +1,4 @@
+
 import { ProductData } from 'tp-kit/types'
 import {create} from 'zustand'
 import { ProductLineData } from '../types'
@@ -31,7 +32,6 @@ export const useStore = create<CartData>(() => ({
             
 
     })
-    console.log(productAlreadyInCart);
     if (!productAlreadyInCart){
         let newLine: ProductLineData = {product: product,qty: 1}
         cart.lines.push(newLine)
@@ -49,7 +49,6 @@ export const useStore = create<CartData>(() => ({
     let cart = useStore.getState()
     let index = cart.lines.findIndex((element) => element == line)
     cart.lines[index] = line
-    console.log(cart.lines);
     
     useStore.setState(() => ({lines: [...cart.lines]}))
  }
@@ -89,7 +88,7 @@ export const useStore = create<CartData>(() => ({
   * Calcule le total du panier
   */
  export function computeCartTotal(lines: ProductLineData[]): number {
-    console.log(lines)
+
     let sumCart = 0
     lines.forEach((line) => {
         sumCart += computeLineSubTotal(line)

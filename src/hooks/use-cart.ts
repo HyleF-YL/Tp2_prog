@@ -18,15 +18,26 @@ export const useStore = create<CartData>(() => ({
  */
  export function addLine(product: ProductData) {
     let cart = useStore.getState()
+    
+    
+    let productAlreadyInCart = false
+
     cart.lines.forEach((line) => {
-        if(line['product'] == product)
+        
+        if(line['product']['id'] == product['id']){
             line['qty']++
+            productAlreadyInCart = true
+        }
             
 
     })
-    let newLine: ProductLineData = {product: product,qty: 1}
-    cart.lines.push(newLine)
+    console.log(productAlreadyInCart);
+    if (!productAlreadyInCart){
+        let newLine: ProductLineData = {product: product,qty: 1}
+        cart.lines.push(newLine)
+    }
     useStore.setState(() => ({lines: [...cart.lines]}))
+    
  }
 
  /**
@@ -36,10 +47,10 @@ export const useStore = create<CartData>(() => ({
   */
  export function updateLine(line: ProductLineData) {
     let cart = useStore.getState()
-    cart.lines.forEach((cartLine) => {
-        if(cartLine == line)
-            cartLine = line
-    })
+    let index = cart.lines.findIndex((element) => element == line)
+    cart.lines[index] = line
+    console.log(cart.lines);
+    
     useStore.setState(() => ({lines: [...cart.lines]}))
  }
  
@@ -78,9 +89,9 @@ export const useStore = create<CartData>(() => ({
   * Calcule le total du panier
   */
  export function computeCartTotal(lines: ProductLineData[]): number {
-    let cart = useStore.getState()
+    console.log(lines)
     let sumCart = 0
-    cart.lines.forEach((line) => {
+    lines.forEach((line) => {
         sumCart += line['product']['price']
     })
     return sumCart

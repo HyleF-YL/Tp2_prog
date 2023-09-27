@@ -2,13 +2,20 @@
 import { PRODUCTS_CATEGORY_DATA } from "tp-kit/data";
 import { Button, Card, ProductCardLayout, ProductCartLine, SectionContainer } from "tp-kit/components";
 
-import { addLine } from "../../hooks/use-cart";
+import { addLine, clearCart, computeCartTotal, computeLineSubTotal, removeLine, updateLine } from "../../hooks/use-cart";
 import { ProductLineData } from "../../types";
 import { useStore } from "../../hooks/use-cart";
+import { useEffect, useState } from "react";
 const products = PRODUCTS_CATEGORY_DATA[0].products.slice(0, 3);
 
 export default function DevCartPage() {
   const lines = useStore((state) => state.lines)
+  const [totalCart,setTotalCart] = useState(computeCartTotal(lines))
+
+  useEffect(() => {
+    setTotalCart(computeCartTotal(lines))
+  }, [lines])
+  
   return (
     <SectionContainer
       className="py-36"
@@ -20,34 +27,43 @@ export default function DevCartPage() {
           <ProductCardLayout
             key={product.id}
             product={product}
-            button={<Button variant={"ghost"} onClick={() => addLine(product)} fullWidth>Ajouter au panier</Button>}
+            button={<Button variant={"ghost"} onClick={() => addLine({...product})} fullWidth>Ajouter au panier</Button>}
           />
         ))}
       </section>
       
       {/* /Produits */}
+
       {/* Panier */}
       <section className="w-full lg:w-1/3 space-y-8">
                 <Card className="flex flex-col justify-around">
                     <h2>Mon panier</h2>
-                    <ProductCartLine 
-                        onDelete={function noRefCheck(){}}
-                        onQtyChange={function noRefCheck(){}} 
-                        product={products[2]} qty={1}/>
-                
-                    <ProductCartLine 
-                        onDelete={function noRefCheck(){}}
-                        onQtyChange={function noRefCheck(){}} 
-                        product={products[1]} qty={2}/>
-                    
+                    {
+                      lines.map((line) => {
+                        return <ProductCartLine key={line['product']['id']} 
+                        onDelete={() => removeLine(line['product']['id'])}
+                        onQtyChange={(value) => {
+                          
+                          let oldQty = line['qty']
+                          line['qty'] = value
+                          if(oldQty < value)
+                            line['product']['price'] = computeLineSubTotal(line) - (line['product']['price'] * oldQty)
+                          else if(oldQty > value)
+                            line['product']['price'] = (line['product']['price'] * oldQty) - computeLineSubTotal(line)
+
+                          updateLine(line)
+                        }} 
+                        product={line['product']} qty={line['qty']}/>
+                      })
+                    }
                     <div className="flex flex-row justify-between">
                         <h3>Total</h3>
-                        <h3>{products[1]['price'] + products[2]['price'] + " €"}</h3>
+                        <h3>{totalCart + " €"}</h3>
                     </div>
 
                     <Button fullWidth>Commander</Button>
                 </Card>
-				<Button variant={"outline"} fullWidth>Vider le panier</Button>
+				<Button variant={"outline"} onClick={() => clearCart()} fullWidth>Vider le panier</Button>
 			</section>
       {/* /Panier */}
     </SectionContainer>

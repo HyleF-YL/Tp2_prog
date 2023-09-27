@@ -8,6 +8,7 @@ import { ProductLineData } from "../../types";
 import { useStore } from "../../hooks/use-cart";
 import { useEffect, useState } from "react";
 import Cart from "../../components/Cart";
+import CartCounter from "../../components/CartCounter";
 const products = PRODUCTS_CATEGORY_DATA[0].products.slice(0, 3);
 
 export default function DevCartPage() {
@@ -31,6 +32,7 @@ export default function DevCartPage() {
       {/* /Produits */}
 
       {/* Panier */}
+      <CartCounter/>
       <Cart/>
       {/* /Panier */}
     </SectionContainer>

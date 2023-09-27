@@ -5,10 +5,12 @@ import { ProductLineData } from '../types'
 
 export interface CartData{
     lines: ProductLineData[]
+    count: number
 }
 
 export const useStore = create<CartData>(() => ({
-    lines: [] as ProductLineData[]
+    lines: [] as ProductLineData[],
+    count: 0
 }))
 
 /**
@@ -36,7 +38,7 @@ export const useStore = create<CartData>(() => ({
         let newLine: ProductLineData = {product: product,qty: 1}
         cart.lines.push(newLine)
     }
-    useStore.setState(() => ({lines: [...cart.lines]}))
+    useStore.setState(() => ({lines: [...cart.lines], count: cart.lines.length}))
     
  }
 
@@ -50,7 +52,7 @@ export const useStore = create<CartData>(() => ({
     let index = cart.lines.findIndex((element) => element == line)
     cart.lines[index] = line
     
-    useStore.setState(() => ({lines: [...cart.lines]}))
+    useStore.setState(() => ({lines: [...cart.lines],count: cart.lines.length}))
  }
  
  /**
@@ -66,14 +68,14 @@ export const useStore = create<CartData>(() => ({
             cart.lines.splice(index,1)
     })
 
-    useStore.setState(() => ({lines: [...cart.lines]}))
+    useStore.setState(() => ({lines: [...cart.lines], count: cart.lines.length}))
  }
  
  /**
   * Vide le contenu du panier actuel
   */
  export function clearCart() {
-    useStore.setState(() => ({lines: []}))
+    useStore.setState(() => ({lines: [],count: 0}))
  }
  
  /**

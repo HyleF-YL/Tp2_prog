@@ -11,7 +11,7 @@ export default function Cart() {
         setTotalCart(computeCartTotal(lines))
     }, [lines])
     return (
-        <section className="w-full lg:w-1/3 space-y-8">
+        <section className="w-full space-y-8">
             <Card className="flex flex-col justify-around">
                 <h2>Mon panier</h2>
                 {
@@ -32,14 +32,15 @@ export default function Cart() {
                     product={line['product']} qty={line['qty']}/>
                 })
                 }
-                <div className="flex flex-row justify-between">
+                <div className="flex flex-row justify-between mt-3">
                     <h3>Total</h3>
                     <h3>{totalCart + " €"}</h3>
                 </div>
 
-                <Button fullWidth>Commander</Button>
+                <Button className="mt-2" fullWidth>Commander</Button>
+                <Button className="mt-4" variant={"outline"} onClick={() => clearCart()} fullWidth>Vider le panier</Button>
             </Card>
-            <Button variant={"outline"} onClick={() => clearCart()} fullWidth>Vider le panier</Button>
+            
         </section>  
     );
 }

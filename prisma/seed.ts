@@ -1,6 +1,7 @@
 import { PrismaClient, Product, ProductCategory } from "@prisma/client";
 import { PRODUCTS_CATEGORY_DATA } from "tp-kit/data";
-const prisma = new PrismaClient()
+import prisma from "../src/utils/prisma";
+
 
 async function main() {
     PRODUCTS_CATEGORY_DATA.forEach(async (product) => {

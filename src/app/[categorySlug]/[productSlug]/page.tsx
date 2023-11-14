@@ -19,6 +19,7 @@ import { cache } from "react";
 import prisma from "../../../utils/prisma";
 import { notFound } from "next/navigation";
 import { getCategory } from "../page";
+
 const product = {
   ...PRODUCTS_CATEGORY_DATA[0].products[0],
   category: {
@@ -36,7 +37,7 @@ export const getItem = cache(async (param: Props) => {
       }
     }
   })
-  const categories = await prisma.productCategory.findFirst({
+  const category = await prisma.productCategory.findFirst({
     where: {
       slug: {
         equals: param.categorySlug
@@ -54,8 +55,8 @@ export const getItem = cache(async (param: Props) => {
       }
     }
   })
-  console.log(product,categories);
-  return [product,categories]
+  console.log(product,category);
+  return {product,category}
 })
 
 type Props = {
@@ -67,13 +68,13 @@ export async function generateMetadata({
   params,
   searchParams,
 }: NextPageProps<Props>): Promise<Metadata> {
-  const product = await getItem(params)
-  if(!product[0] || product[1]) return {}
+  const results = await getItem(params)
+  if(!results.product || results.category) return {}
   return {
-    title: product[0],
+    title: results.product.name,
     description:
-      product[0].desc ??
-      `Succombez pour notre ${product[0].name} et commandez-le sur notre site !`,
+      results.product.desc ??
+      `Succombez pour notre ${results.product.name} et commandez-le sur notre site !`,
   };
 }
 
@@ -87,7 +88,7 @@ const productAttributes: ProductAttribute[] = [
 
 export default async function ProductPage({ params }: NextPageProps<Props>) {
   const currentProduct = await getItem(params)
-  if(!currentProduct[0] || !currentProduct[1])
+  if(!currentProduct.product || !currentProduct.category)
     notFound()
   
   return (
@@ -100,12 +101,12 @@ export default async function ProductPage({ params }: NextPageProps<Props>) {
             url: "/",
           },
           {
-            label: currentProduct[1].name,
-            url: `/${currentProduct[1].slug}`,
+            label: currentProduct.category.name,
+            url: `/${currentProduct.category.slug}`,
           },
           {
-            label: currentProduct[0].name,
-            url: `/${currentProduct[0].path}`,
+            label: currentProduct.product.name,
+            url: `/${currentProduct.product.path}`,
           },
         ]}
       />
@@ -115,7 +116,7 @@ export default async function ProductPage({ params }: NextPageProps<Props>) {
         {/* Product Image */}
         <div className="relative">
           <ProductImage
-            {...currentProduct[0].img}
+            {...currentProduct.product}
             priority
             className="rounded-lg sticky top-12 object-cover sm:aspect-video md:aspect-auto w-full md:w-[300px]"
           />
@@ -125,18 +126,18 @@ export default async function ProductPage({ params }: NextPageProps<Props>) {
         <div className="flex-1">
           <div className="prose prose-lg">
             {/* Product Name */}
-            <h1>{currentProduct[0].name}</h1>
+            <h1>{currentProduct.product.name}</h1>
 
             {/* Product Rating */}
             <ProductRating value={4} size={18} />
 
             {/* Desc */}
-            <p>{currentProduct[0].desc}</p>
+            <p>{currentProduct.product.desc}</p>
 
             {/* Prix et ajout au panier */}
             <div className="flex justify-between items-center gap-8">
               <p className="!my-0 text-xl">
-                <FormattedPrice price={currentProduct[0].price} />
+                <FormattedPrice price={currentProduct.product.price} />
               </p>
               <Button variant={"primary"}>Ajouter au panier</Button>
             </div>
@@ -154,7 +155,7 @@ export default async function ProductPage({ params }: NextPageProps<Props>) {
             <h2>Vous aimerez aussi</h2>
           </div>
 
-          <ProductGridLayout products={currentProduct[1]}>
+          <ProductGridLayout products={currentProduct.category.products}>
             {(product) => (
               <ProductCardLayout
                 product={product}

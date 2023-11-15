@@ -7,13 +7,14 @@ import { useForm } from "@mantine/form";
 import { TextInput, Checkbox } from "@mantine/core";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { Button } from "tp-kit/components";
-
+import { useRouter } from "next/navigation";
 type Props = {
   categories: ProductsCategoryData[];
   onChange: (values: ProductFiltersResult) => void;
 };
 
 const ProductFilters: FC<Props> = memo(function ({ categories, onChange }) {
+  //const router = useRouter()
   /**
    * Initializes the form with empty fields. Never let a field undefined to let react properly controls the inputs
    */
@@ -28,10 +29,12 @@ const ProductFilters: FC<Props> = memo(function ({ categories, onChange }) {
    * Fired when form is submitted : send the form values to the parent component 
    */
   const handleSubmit = useCallback((values: ProductFiltersResult) => {
+    
     onChange({
       categoriesSlugs: values.categoriesSlugs,
       search: values.search || undefined
     });
+    //router.push(`/?search=${values.search}&categories=${values.categoriesSlugs}`)
   }, [onChange]);
 
   return (

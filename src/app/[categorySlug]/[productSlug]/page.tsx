@@ -20,14 +20,6 @@ import prisma from "../../../utils/prisma";
 import { notFound } from "next/navigation";
 import { getCategory } from "../page";
 
-const product = {
-  ...PRODUCTS_CATEGORY_DATA[0].products[0],
-  category: {
-    ...PRODUCTS_CATEGORY_DATA[0],
-    products: PRODUCTS_CATEGORY_DATA[0].products.slice(1),
-  },
-};
-
 export const getItem = cache(async (param: Props) => {
   console.log("getCategory")
   const product = await prisma.product.findFirst({
@@ -55,7 +47,6 @@ export const getItem = cache(async (param: Props) => {
       }
     }
   })
-  console.log(product,category);
   return {product,category}
 })
 

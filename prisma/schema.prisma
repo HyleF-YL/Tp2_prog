@@ -11,20 +11,46 @@ datasource db {
 }
 
 model Product {
-  id       Int    @id @unique
-  slug     String @unique
-  path     String @unique
-  name     String
-  desc     String?
-  img      String
-  price    Float
-  category ProductCategory @relation(fields: [categoryId], references: [id])
+  id         Int             @id @unique
+  slug       String          @unique
+  path       String          @unique
+  name       String
+  desc       String?
+  img        String
+  price      Float
+  category   ProductCategory @relation(fields: [categoryId], references: [id])
   categoryId Int
+  order      OrderLine?
 }
 
 model ProductCategory {
-  id    Int @id @unique
-  slug  String  @unique
-  name  String
+  id       Int       @id @unique
+  slug     String    @unique
+  name     String
   products Product[]
+  orderId  Int
+}
+
+model OrderLine {
+  id        Int     @id
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int     @unique
+  qtv       Int     @default(1)
+  subtotal  Float
+}
+
+model Order {
+  id          Int             @id
+  createdAt   DateTime
+  completedAt DateTime
+  status      OrderStatusEnum @default(IN_PROGRESS)
+  lines       OrderLine[]
+  total       Float
+}
+
+enum OrderStatusEnum {
+  IN_PROGRESS
+  COMPLETED
 }

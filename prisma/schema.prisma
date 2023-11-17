@@ -28,7 +28,6 @@ model ProductCategory {
   slug     String    @unique
   name     String
   products Product[]
-  orderId  Int
 }
 
 model OrderLine {

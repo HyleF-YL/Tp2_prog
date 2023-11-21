@@ -6,13 +6,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.starbucks.fr',
       },
+      
     ],
   },
-}
-module.exports = nextConfig
-
-module.exports = {
   experimental: {
     serverActions: true,
   },
+  
 }
+
+module.exports = nextConfig
+

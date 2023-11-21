@@ -13,9 +13,6 @@ export async function GET(req: NextRequest) {
     
     if(categories[0] == '' || categories[0] == 'undefined')
       categories = undefined
-
-    console.log(search)
-    console.log(categories);
     
     let response = {
       params: {
